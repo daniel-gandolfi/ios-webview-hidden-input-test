@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2113.6">
+  <style type="text/css">
+      body {
+        background: white;
+        overflow: hidden
+      }
+      div {
+        display: inline-block;
+        border: 5px solid black;
+        padding: 1em;
+        margin: 0.5em;
+      }
+  </style>
+</head>
+<body>
+    <h1>test</h1>
+    <script id="template" type="text/template">
+      <h2>hidden input</h2>
+      <input type="file" accept="image/*"  style="display:none"/>
+        <button type="button" >
+          upload
+      </button>
+    </script>
+    <script>
+        const template = document.getElementById("template")
+        
+        function createFromTemplate(title, parent) {
+            const wrapper = document.createElement("div")
+            wrapper.innerHTML =  template.innerHTML;
+            wrapper.children[0].innerText = title
+            parent.appendChild(wrapper);
+            return wrapper;
+        }
+        
+        createFromTemplate("hidden input simple", document.body);
+        (function(){
+            const wrapper = createFromTemplate("visible input simple", document.body);
+            wrapper.getElementsByTagName("input")[0].style = ""
+        })();
+        
+        const inputList = Array.from(document.getElementsByTagName("input"));
+        setInterval(() => {
+            inputList.forEach((i) => {
+                if (i.files.length !== 0) {
+                    logToHtml("input popolato", i)
+                }
+            })
+        },5000)
+        inputList.forEach(input => {
+            ["change", "input", "securitypolicyviolation", "error"].forEach(eventName =>
+                                                                            input.addEventListener(eventName, e => {
+                logToHtml({
+                    type: e.type,
+                    files: e.target.files,
+                    fileCount: e.target.files.length,
+                    event: e
+                })
+            }))
+        })
+        
+        Array.from(document.getElementsByTagName("button")).forEach(btn => btn.addEventListener("click", (e) => {
+            e.target.parentNode.getElementsByTagName("input")[0].click()
+        }))
+        
+        const logNode = document.createElement("div");
+        document.body.appendChild(logNode)
+        function logToHtml(object) {
+            console.error(object)
+            const text = document.createElement("div")
+            text.innerHTML = JSON.stringify(object);
+            logNode.append(text)
+        }
+        
+    </script>
+</body>
+</html>
