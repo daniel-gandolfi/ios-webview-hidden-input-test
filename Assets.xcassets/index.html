@@ -9,7 +9,8 @@
   <style type="text/css">
       body {
         background: white;
-        overflow: hidden
+        overflow: hidden;
+        font-size: 32pt;    
       }
       div {
         display: inline-block;
@@ -47,6 +48,17 @@
         (function(){
             const wrapper = createFromTemplate("hidden input simple + label", document.body);
             const input = wrapper.getElementsByTagName("input")[0];
+            input.id = "simple_label_" + Date.now() 
+            const btn = wrapper.getElementsByTagName("button")[0]
+            const label = document.createElement("label");
+            label.htmlFor = input.id;
+            label.innerText = "select"
+            btn.parentNode.replaceChild(label, btn)
+        })();
+        (function(){
+            const wrapper = createFromTemplate("out of viewport input simple + label", document.body);
+            const input = wrapper.getElementsByTagName("input")[0];
+            input.style = "transform: translateX(200vw)";
             input.id = "simple_label_" + Date.now() 
             const btn = wrapper.getElementsByTagName("button")[0]
             const label = document.createElement("label");
