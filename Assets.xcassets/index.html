@@ -39,12 +39,21 @@
             return wrapper;
         }
         
-        createFromTemplate("hidden input simple", document.body);
+        createFromTemplate("hidden input simple + btn", document.body);
         (function(){
-            const wrapper = createFromTemplate("visible input simple", document.body);
+            const wrapper = createFromTemplate("visible input simple + btn", document.body);
             wrapper.getElementsByTagName("input")[0].style = ""
         })();
-        
+        (function(){
+            const wrapper = createFromTemplate("hidden input simple + label", document.body);
+            const input = wrapper.getElementsByTagName("input")[0];
+            input.id = "simple_label_" + Date.now() 
+            const btn = wrapper.getElementsByTagName("button")[0]
+            const label = document.createElement("label");
+            label.htmlFor = input.id;
+            label.innerText = "select"
+            btn.parentNode.replaceChild(label, btn)
+        })()
         const inputList = Array.from(document.getElementsByTagName("input"));
         setInterval(() => {
             inputList.forEach((i) => {
@@ -54,7 +63,7 @@
             })
         },5000)
         inputList.forEach(input => {
-            ["change", "input", "securitypolicyviolation", "error"].forEach(eventName =>
+            ["change", "blur","input", "securitypolicyviolation", "error"].forEach(eventName =>
                                                                             input.addEventListener(eventName, e => {
                 logToHtml({
                     type: e.type,
